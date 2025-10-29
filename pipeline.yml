@@ -1,0 +1,23 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: ci-pipeline
+spec:
+  workspaces:
+    - name: shared-workspace
+  tasks:
+    - name: test
+      taskRef:
+        name: nose-test
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+
+    - name: do-cleanup
+      taskRef:
+        name: cleanup
+      runAfter:
+        - test
+      workspaces:
+        - name: source
+          workspace: shared-workspace
